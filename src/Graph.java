@@ -1,6 +1,26 @@
 import java.util.*;
 import java.util.LinkedList;
 
+/*
+ * A Graph is a non-linear data structure consisting of nodes(vertex) and edges(relationship).
+ *
+ * Breadth First Search (BFS) for a graph is visiting of nodes "layer-by-layer".
+ * Depth-First Search (DFS) searches as far as possible along a branch and then backtracks to search as far as possible in the next branch.
+ *
+ * Difference between Tree and Graph traversal:
+ * graphs may contain cycles. To avoid processing a node more than once, we use a visited map.
+ *
+ * Example of Graph and traversal:
+ *
+ *               A
+ *          /    |    \
+ *        B  ——  C      D
+ *       /
+ *     E
+ *
+ * DFS(from 0): A D C B E
+ * BFS(from 0): A B C D E
+ */
 class Graph<T> {
 
     private Map<Vertex<T>, List<Vertex<T>>> adjVertices = new HashMap<>();
@@ -24,27 +44,44 @@ class Graph<T> {
         adjVertices.get(dest).removeIf(v -> v != null && v.equals(src));
     }
 
-    void breadthFirstSearchTraversal(Vertex<T> beginning){
+    void breadthFirstSearchTraversal(Vertex<T> beginning) {
+        System.out.println("\n===============================");
         System.out.println("Breadth First Search Traversal:");
         Map<Vertex<T>, Boolean> visited = new HashMap<>();
         Queue<Vertex<T>> way = new LinkedList<>();
         way.add(beginning);
         visited.put(beginning, true);
-        while (!way.isEmpty()){
+        while (!way.isEmpty()) {
             Vertex<T> vertex = way.remove();
             System.out.print(vertex.getValue() + " ");
             List<Vertex<T>> adjVertices = this.adjVertices.getOrDefault(vertex, new ArrayList<>());
-            adjVertices.forEach(v-> {
-                if(!visited.containsKey(v)){
+            adjVertices.forEach(v -> {
+                if (!visited.containsKey(v)) {
                     way.add(v);
                     visited.put(v, true);
                 }
             });
         }
     }
-    //TBC
-    void depthFirstSearchTraversal(){
 
+    void depthFirstSearchTraversal(Vertex<T> beginning) {
+        System.out.println("\n===============================");
+        System.out.println("Depth-First-Search traversal:");
+        Stack<Vertex<T>> way = new Stack<>();
+        Map<Vertex<T>, Boolean> visited = new HashMap<>();
+        way.push(beginning);
+        visited.put(beginning, true);
+        while (!way.isEmpty()) {
+            Vertex<T> vertex = way.pop();
+            System.out.print(vertex.getValue() + " ");
+            List<Vertex<T>> adjVertices = this.adjVertices.getOrDefault(vertex, new ArrayList<>());
+            adjVertices.forEach(v -> {
+                if (!visited.containsKey(v)) {
+                    way.push(v);
+                    visited.put(v, true);
+                }
+            });
+        }
     }
 
     static class Vertex<T> {
@@ -74,26 +111,24 @@ class Graph<T> {
     }
 
     public static void main(String[] args) {
-        Graph<String> graph = new Graph<>();
-        Vertex<String> minsk = new Vertex<>("Minsk");
-        Vertex<String> mahilyow = new Vertex<>("Mahilyow");
-        Vertex<String> viciebsk = new Vertex<>("Viciebsk");
-        Vertex<String> homel = new Vertex<>("Homel");
-        Vertex<String> hrodna = new Vertex<>("Hrodna");
-        Vertex<String> brest = new Vertex<>("Brest");
-        Vertex<String> kyiv = new Vertex<>("Kyiv");
-        Arrays.asList(minsk, mahilyow, viciebsk, homel, hrodna, brest, kyiv).forEach(graph::addVertex);
-        Arrays.asList(mahilyow, viciebsk, homel, hrodna, brest).forEach(dest -> graph.addEdge(minsk, dest));
-        Arrays.asList(minsk, viciebsk, homel).forEach(dest -> graph.addEdge(mahilyow, dest));
-        Arrays.asList(minsk, mahilyow, hrodna).forEach(dest -> graph.addEdge(viciebsk, dest));
-        Arrays.asList(minsk, mahilyow, brest).forEach(dest -> graph.addEdge(homel, dest));
-        Arrays.asList(minsk, mahilyow, brest).forEach(dest -> graph.addEdge(hrodna, dest));
-        Arrays.asList(minsk, viciebsk, brest).forEach(dest -> graph.addEdge(brest, dest));
-        graph.addEdge(homel, kyiv);
-        graph.breadthFirstSearchTraversal(minsk);
+        Graph<String> travelGraph = new Graph<>();
+        Vertex<String> countryA = new Vertex<>("Australia");
+        Vertex<String> countryB = new Vertex<>("Belarus");
+        Vertex<String> countryC = new Vertex<>("Canada");
+        Vertex<String> countryD = new Vertex<>("Denmark");
+        Vertex<String> countryE = new Vertex<>("Ethiopia");
 
-        graph.removeEdge(kyiv, homel);
-        graph.removeVertex(kyiv);
-        graph.depthFirstSearchTraversal();
+        Arrays.asList(countryA, countryB, countryC, countryD, countryE).forEach(travelGraph::addVertex);
+        Arrays.asList(countryB, countryC, countryD).forEach(dest -> travelGraph.addEdge(countryA, dest));
+        Arrays.asList(countryC, countryE).forEach(dest -> travelGraph.addEdge(countryB, dest));
+        Arrays.asList(countryA, countryB).forEach(dest -> travelGraph.addEdge(countryC, dest));
+        travelGraph.addEdge(countryD, countryA);
+        travelGraph.addEdge(countryE, countryB);
+        travelGraph.breadthFirstSearchTraversal(countryA);
+        travelGraph.depthFirstSearchTraversal(countryA);
+
+        travelGraph.removeEdge(countryA, countryD);
+        travelGraph.removeVertex(countryD);
+        travelGraph.depthFirstSearchTraversal(countryA);
     }
 }
