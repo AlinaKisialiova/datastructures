@@ -31,11 +31,11 @@ class LinkedList<T> {
     private Node<T> head;
 
     void add(T data) {
-        Node node = new Node<>(data);
+        Node<T> node = new Node<>(data);
         if (head == null) {
             head = node;
         } else {
-            Node last = head;
+            Node<T> last = head;
             while (last.next != null) {
                 last = last.next;
             }
@@ -52,7 +52,7 @@ class LinkedList<T> {
             return;
         }
         Node<T> previous = null, current = head;
-        while (current.data != data && current != null) {
+        while (current != null && current.data != data) {
             previous = current;
             current = current.next;
         }
@@ -62,7 +62,7 @@ class LinkedList<T> {
     }
 
     void print() {
-        Node current = head;
+        Node<T> current = head;
         while (current != null) {
             System.out.print(current.data + " ");
             current = current.next;
